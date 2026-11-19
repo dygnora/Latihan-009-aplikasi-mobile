@@ -30,7 +30,12 @@ class UserInfoScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Icon(Icons.account_circle, size: 100, color: Colors.blue),
+              user.photoURL != null && user.photoURL!.isNotEmpty
+                  ? CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(user.photoURL!),
+                    )
+                  : const Icon(Icons.account_circle, size: 100, color: Colors.blue),
               const SizedBox(height: 24),
               const Text(
                 'Login Berhasil!',
@@ -49,7 +54,15 @@ class UserInfoScreen extends StatelessWidget {
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ), // Text
                       const SizedBox(height: 8),
+                      Text(
+                        'Display Name: ${user.displayName ?? "Tidak ada display name"}',
+                      ),
+                      const SizedBox(height: 8),
                       Text('Email: ${user.email ?? "Tidak ada email"}'),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Photo URL: ${user.photoURL ?? "Tidak ada photo URL"}',
+                      ),
                       const SizedBox(height: 8),
                       Text(
                         'Email Terverifikasi: ${user.emailVerified ? "Ya" : "Tidak"}',
