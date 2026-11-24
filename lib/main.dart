@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'auth/auth_wrapper.dart';
 import 'firebase_options.dart';
 
+import 'package:firebase_messaging/firebase_messaging.dart'; 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Inisialisasi Firebase
@@ -13,7 +15,12 @@ void main() async {
   );
   // await Firebase.initializeApp();
 
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+
   runApp(const MyApp());
+
+  await NotificationService.init();
 }
 
 class MyApp extends StatelessWidget {
