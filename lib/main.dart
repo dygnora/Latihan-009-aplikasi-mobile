@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Firebase Auth Simple',
+      navigatorKey: navigatorKey, // Kunci global Navigator
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ), // ThemeData
