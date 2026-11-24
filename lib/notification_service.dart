@@ -1,117 +1,139 @@
+
 import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import 'firebase_options.dart';
 import 'notification_detail_screen.dart';
 
-/// Kunci global Navigator, supaya kita bisa pindah halaman
-/// dari luar widget (misalnya saat notifikasi di-klik).
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> navigatorKey =
+    GlobalKey<NavigatorState>();
 
-/// HANDLER BACKGROUND / TERMINATED
-/// - Wajib fungsi top-level (di luar class).
-/// - Wajib diberi @pragma('vm:entry-point') agar tidak dibuang saat build release.
-/// - Dipanggil saat pesan masuk ketika aplikasi di background / mati.
 @pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  debugPrint('[FCM] Pesan BACKGROUND: ${message.messageId}');
+Future<void> firebaseMessagingBackgroundHandler(
+  RemoteMessage message,
+) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  debugPrint('[FCM] Background: ${message.messageId}');
   debugPrint('[FCM] Data: ${message.data}');
-  // Catatan: notifikasi di system tray sudah ditampilkan otomatis oleh
-  // Android jika payload memiliki bagian "notification".
 }
 
 class NotificationService {
   NotificationService._();
 
-  static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  static final FirebaseMessaging _messaging =
+      FirebaseMessaging.instance;
+
   static final FlutterLocalNotificationsPlugin _localNotif =
       FlutterLocalNotificationsPlugin();
 
-  /// Channel Android (Android 8+ wajib punya channel).
-  /// ID ini HARUS sama dengan yang ada di AndroidManifest.xml
-  /// dan di payload Postman ("channel_id").
-  static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'Notifikasi Penting', // nama yang terlihat di pengaturan HP
-    description: 'Channel untuk notifikasi dari Firebase Cloud Messaging',
+  static const AndroidNotificationChannel _channel =
+      AndroidNotificationChannel(
+    'high_importance_channel',
+    'Notifikasi Penting',
+    description: 'Channel notifikasi FCM',
     importance: Importance.max,
   );
 
   static Future<void> init() async {
-    // 1. Minta izin notifikasi (Android 13+ akan muncul dialog izin)
+    // 1. Permission
     final settings = await _messaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
-    debugPrint('[FCM] Status izin: ${settings.authorizationStatus}');
 
-    // 2. Inisialisasi flutter_local_notifications + buat channel
-    const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-    await _localNotif.initialize(
-      settings: const InitializationSettings(android: androidInit),
-      // Dipanggil saat notifikasi LOKAL (foreground) di-klik
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        if (response.payload != null) {
-          _openDetail(jsonDecode(response.payload!) as Map<String, dynamic>);
-        }
-      },
+    debugPrint(
+      '[FCM] Permission: ${settings.authorizationStatus}',
     );
-    await _localNotif
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.createNotificationChannel(_channel);
 
-    // 3. Ambil FCM Token (alamat tujuan notifikasi untuk device ini)
+    // 2. Token
     try {
-      // ignore: deprecated_member_use
       final token = await _messaging.getToken();
       debugPrint('[FCM] TOKEN: $token');
     } catch (e) {
-      debugPrint('[FCM] Gagal mengambil token: $e');
+      debugPrint('[FCM] Token error: $e');
     }
-    // ignore: deprecated_member_use
-    _messaging.onTokenRefresh.listen((newToken) {
-      debugPrint('[FCM] TOKEN BARU: $newToken');
+
+    _messaging.onTokenRefresh.listen((token) {
+      debugPrint('[FCM] TOKEN BARU: $token');
     });
 
-    // 4. Subscribe ke topic "kelas" (untuk kirim ke banyak device sekaligus)
-    await _messaging.subscribeToTopic('kelas');
+    // 3. Local notification khusus Android
+    if (!kIsWeb) {
+      const androidInit =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // 5. FOREGROUND: pesan masuk saat aplikasi sedang dibuka
+      await _localNotif.initialize(
+        settings: const InitializationSettings(
+          android: androidInit,
+        ),
+        onDidReceiveNotificationResponse: (response) {
+          if (response.payload != null) {
+            _openDetail(
+              jsonDecode(response.payload!) as Map<String, dynamic>,
+            );
+          }
+        },
+      );
+
+      await _localNotif
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(_channel);
+
+      // Cek local notification yang membuka aplikasi.
+      final launchDetails =
+          await _localNotif.getNotificationAppLaunchDetails();
+
+      final payload =
+          launchDetails?.notificationResponse?.payload;
+
+      if ((launchDetails?.didNotificationLaunchApp ?? false) &&
+          payload != null) {
+        _openDetail(
+          jsonDecode(payload) as Map<String, dynamic>,
+        );
+      }
+    }
+
+    // 4. Subscribe topic khusus Android.
+    if (!kIsWeb) {
+      try {
+        await _messaging.subscribeToTopic('kelas');
+      } catch (e) {
+        debugPrint('[FCM] Subscribe topic error: $e');
+      }
+    }
+
+    // 5. Foreground message.
     FirebaseMessaging.onMessage.listen(_showForegroundNotification);
 
-    // 6. BACKGROUND -> klik notifikasi -> aplikasi kembali terbuka
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      debugPrint('[FCM] Dibuka dari BACKGROUND');
+    // 6. Klik notifikasi ketika aplikasi di background.
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      debugPrint('[FCM] Notifikasi diklik dari background');
       _openDetail(_messageToMap(message));
     });
-
-    // 7. TERMINATED -> klik notifikasi -> aplikasi dijalankan dari awal
-    final initialMessage = await _messaging.getInitialMessage();
-    if (initialMessage != null) {
-      debugPrint('[FCM] Dibuka dari kondisi MATI (terminated)');
-      _openDetail(_messageToMap(initialMessage));
-    }
-
-    // 8. (Tambahan) Aplikasi dibuka dari notifikasi LOKAL saat app sudah mati
-    final launchDetails = await _localNotif.getNotificationAppLaunchDetails();
-    final payload = launchDetails?.notificationResponse?.payload;
-    if ((launchDetails?.didNotificationLaunchApp ?? false) && payload != null) {
-      _openDetail(jsonDecode(payload) as Map<String, dynamic>);
-    }
   }
 
-  /// Menampilkan notifikasi saat aplikasi di FOREGROUND.
-  /// Android TIDAK menampilkan notifikasi FCM secara otomatis
-  /// jika aplikasi sedang dibuka, jadi kita tampilkan sendiri.
-  static Future<void> _showForegroundNotification(RemoteMessage message) async {
-    debugPrint('[FCM] Pesan FOREGROUND: ${message.notification?.title}');
+  // Menampilkan local notification di Android.
+  static Future<void> _showForegroundNotification(
+    RemoteMessage message,
+  ) async {
+    debugPrint('[FCM] Foreground message');
+
+    if (kIsWeb) {
+      // Notifikasi Web ditangani oleh browser / Service Worker.
+      return;
+    }
+
     final notification = message.notification;
     if (notification == null) return;
 
@@ -133,8 +155,9 @@ class NotificationService {
     );
   }
 
-  /// Gabungkan title, body, dan data menjadi satu Map.
-  static Map<String, dynamic> _messageToMap(RemoteMessage message) {
+  static Map<String, dynamic> _messageToMap(
+    RemoteMessage message,
+  ) {
     return {
       'title': message.notification?.title ?? '-',
       'body': message.notification?.body ?? '-',
@@ -142,22 +165,11 @@ class NotificationService {
     };
   }
 
-  /// Buka halaman detail notifikasi.
   static void _openDetail(Map<String, dynamic> data) {
-    void push() {
-      navigatorKey.currentState?.push(
-        MaterialPageRoute(
-          builder: (_) => NotificationDetailScreen(data: data),
-        ),
-      );
-    }
-
-    // Jika Navigator belum siap (aplikasi baru start), tunggu frame pertama.
-    if (navigatorKey.currentState != null) {
-      push();
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) => push());
-    }
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (_) => NotificationDetailScreen(data: data),
+      ),
+    );
   }
 }
-

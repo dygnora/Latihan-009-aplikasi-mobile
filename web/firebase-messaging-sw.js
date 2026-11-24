@@ -1,3 +1,4 @@
+
 importScripts(
   "https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"
 );
@@ -19,4 +20,45 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
   console.log("Background message received:", payload);
+});
+
+// Menangani klik notifikasi.
+self.addEventListener("notificationclick", (event) => {
+  console.log("Notification clicked:", event.notification);
+
+  event.notification.close();
+
+  const notificationData = {
+    title: event.notification.title || "-",
+    body: event.notification.body || "-",
+    ...(event.notification.data || {}),
+  };
+
+  const targetUrl = self.location.origin + self.location.pathname;
+
+  event.waitUntil(
+    clients.matchAll({
+      type: "window",
+      includeUncontrolled: true,
+    }).then((clientList) => {
+      for (const client of clientList) {
+        if ("focus" in client) {
+          return client.focus().then((focusedClient) => {
+            focusedClient.postMessage({
+              type: "FCM_NOTIFICATION_CLICK",
+              data: notificationData,
+            });
+
+            return focusedClient;
+          });
+        }
+      }
+
+      return clients.openWindow(
+        targetUrl +
+        "?notification=" +
+        encodeURIComponent(JSON.stringify(notificationData))
+      );
+    })
+  );
 });
