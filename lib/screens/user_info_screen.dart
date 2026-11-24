@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 class UserInfoScreen extends StatelessWidget {
@@ -23,7 +24,7 @@ class UserInfoScreen extends StatelessWidget {
           ), // IconButton
         ],
       ), // AppBar
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
@@ -75,10 +76,47 @@ class UserInfoScreen extends StatelessWidget {
                   ), // Column
                 ), // Padding
               ), // Card
+              const SizedBox(height: 24),
+              const FcmTokenCard(), // Widget untuk menampilkan FCM Token
             ],
           ), // Column
         ), // Padding
       ), // Center
     ); // Scaffold
+  }
+}
+
+class FcmTokenCard extends StatelessWidget {
+  const FcmTokenCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder<String?>(
+          future: FirebaseMessaging.instance.getToken(),
+          builder: (context, snapshot) {
+            final token = snapshot.data;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'FCM Token',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                SelectableText(
+                  snapshot.connectionState == ConnectionState.waiting
+                      ? 'Memuat...'
+                      : token ?? 'Token tidak tersedia',
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
   }
 }
