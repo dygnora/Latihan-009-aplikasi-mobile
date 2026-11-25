@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:latihan_009_aplikasi_mobile/fcm_token_card.dart';
 
 class UserInfoScreen extends StatelessWidget {
   final User user;
@@ -23,7 +24,7 @@ class UserInfoScreen extends StatelessWidget {
           ), // IconButton
         ],
       ), // AppBar
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
@@ -75,6 +76,8 @@ class UserInfoScreen extends StatelessWidget {
                   ), // Column
                 ), // Padding
               ), // Card
+              const SizedBox(height: 16),
+              const FcmTokenCard()
             ],
           ), // Column
         ), // Padding
