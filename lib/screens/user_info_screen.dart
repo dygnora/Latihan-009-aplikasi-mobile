@@ -5,7 +5,7 @@ import 'package:latihan_009_aplikasi_mobile/fcm_token_card.dart';
 class UserInfoScreen extends StatelessWidget {
   final User user;
 
-  const UserInfoScreen({Key? key, required this.user}) : super(key: key);
+  const UserInfoScreen({super.key, required this.user});
 
   Future<void> _logout() async {
     await FirebaseAuth.instance.signOut();
@@ -77,11 +77,11 @@ class UserInfoScreen extends StatelessWidget {
                 ), // Padding
               ), // Card
               const SizedBox(height: 16),
-              const FcmTokenCard()
+              const FcmTokenCard(),
             ],
           ), // Column
         ), // Padding
-      ), // Center
+      ), // SingleChildScrollView
     ); // Scaffold
   }
 }
