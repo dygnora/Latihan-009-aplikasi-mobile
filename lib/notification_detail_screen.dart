@@ -48,7 +48,7 @@ class NotificationDetailScreen extends StatelessWidget {
               ),
               child: ListTile(
                 title: Text(e.key),
-                subtitle: Text(e.value.toString()),
+                subtitle: Text(e.value?.toString() ?? '-'),
               ),
             ),
           ),
