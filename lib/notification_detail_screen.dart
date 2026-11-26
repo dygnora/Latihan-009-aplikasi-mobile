@@ -43,6 +43,9 @@ class NotificationDetailScreen extends StatelessWidget {
           if (extraData.isEmpty) const Text('Tidak ada data tambahan.'),
           ...extraData.entries.map(
             (e) => Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: ListTile(
                 title: Text(e.key),
                 subtitle: Text(e.value.toString()),
