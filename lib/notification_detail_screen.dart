@@ -18,7 +18,7 @@ class NotificationDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Icon(Icons.notifications_active, size: 80, color: Colors.orange),
+          const Icon(Icons.notifications_active, size: 80, color: Color.fromARGB(255, 54, 117, 190)),
           const SizedBox(height: 16),
           Text(
             data['title']?.toString() ?? '-',
