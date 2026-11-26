@@ -74,7 +74,7 @@ class UserInfoScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Terakhir Login: ${user.metadata.lastSignInTime.toString()}',
+                        'Terakhir Login: ${user.metadata.lastSignInTime?.toString() ?? "-"}',
                       ),
                     ],
                   ), // Column
