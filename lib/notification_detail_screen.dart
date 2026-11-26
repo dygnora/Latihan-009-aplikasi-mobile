@@ -14,7 +14,10 @@ class NotificationDetailScreen extends StatelessWidget {
       ..remove('body');
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Detail Notifikasi')),
+      appBar: AppBar(
+        title: const Text('Detail Notifikasi'),
+        centerTitle: true,
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
