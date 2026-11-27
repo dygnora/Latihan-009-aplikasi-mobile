@@ -32,7 +32,31 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.amber,
+          primary: Colors.amber.shade700,
+          secondary: Colors.amber.shade600,
+        ),
+        scaffoldBackgroundColor: const Color(0xFFFFFBF2),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.amber,
+          foregroundColor: Colors.black87,
+          elevation: 0,
+          centerTitle: true,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.amber.shade700,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+        progressIndicatorTheme: ProgressIndicatorThemeData(
+          color: Colors.amber.shade700,
+        ),
       ), // ThemeData
       // Menggunakan StreamBuilder untuk mendeteksi status login
       home: const AuthWrapper(),

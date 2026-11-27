@@ -24,41 +24,139 @@ class NotificationDetailScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          if (imageUrl != null && imageUrl.isNotEmpty)
-            _NotificationImagePreview(imageUrl: imageUrl)
-          else
-            const Icon(
-              Icons.notifications_active,
-              size: 80,
-              color: Color.fromARGB(255, 54, 117, 190),
+          Card(
+            elevation: 2,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(color: Colors.amber.shade200),
             ),
-          const SizedBox(height: 16),
-          Text(
-            data['title']?.toString() ?? '-',
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  if (imageUrl != null && imageUrl.isNotEmpty)
+                    _NotificationImagePreview(imageUrl: imageUrl)
+                  else
+                    Container(
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.shade100,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.notifications_active,
+                        size: 56,
+                        color: Colors.amber.shade800,
+                      ),
+                    ),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.shade50,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.amber.shade300),
+                    ),
+                    child: Text(
+                      'NOTIFIKASI',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.8,
+                        color: Colors.amber.shade900,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    data['title']?.toString() ?? '-',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    data['body']?.toString() ?? '-',
+                    style: TextStyle(
+                      fontSize: 15,
+                      height: 1.4,
+                      color: Colors.grey.shade800,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            data['body']?.toString() ?? '-',
-            style: const TextStyle(fontSize: 16),
-            textAlign: TextAlign.center,
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Icon(Icons.data_object, size: 20, color: Colors.amber.shade800),
+              const SizedBox(width: 8),
+              const Text(
+                'Data Tambahan (Payload)',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
-          const Divider(height: 32),
-          const Text(
-            'Data tambahan (data payload):',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          if (extraData.isEmpty) const Text('Tidak ada data tambahan.'),
-          ...extraData.entries.map(
-            (e) => Card(
+          const SizedBox(height: 10),
+          if (extraData.isEmpty)
+            Card(
+              elevation: 0,
+              color: Colors.amber.shade50,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: Colors.amber.shade200),
+              ),
+              child: const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'Tidak ada data tambahan.',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ...extraData.entries.map(
+            (e) => Card(
+              elevation: 1,
+              color: Colors.white,
+              margin: const EdgeInsets.only(bottom: 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: Colors.amber.shade100),
               ),
               child: ListTile(
-                title: Text(e.key),
-                subtitle: Text(e.value?.toString() ?? '-'),
+                leading: CircleAvatar(
+                  backgroundColor: Colors.amber.shade100,
+                  child: Icon(
+                    Icons.label_outline,
+                    color: Colors.amber.shade800,
+                    size: 20,
+                  ),
+                ),
+                title: Text(
+                  e.key,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                subtitle: Text(
+                  e.value?.toString() ?? '-',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
+                ),
               ),
             ),
           ),

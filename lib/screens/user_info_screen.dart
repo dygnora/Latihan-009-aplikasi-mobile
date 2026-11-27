@@ -37,7 +37,11 @@ class UserInfoScreen extends StatelessWidget {
                       radius: 50,
                       backgroundImage: NetworkImage(user.photoURL!),
                     )
-                  : const Icon(Icons.account_circle, size: 100, color: Colors.blue),
+                  : Icon(
+                      Icons.account_circle,
+                      size: 100,
+                      color: Colors.amber.shade700,
+                    ),
               const SizedBox(height: 24),
               const Text(
                 'Login Berhasil!',

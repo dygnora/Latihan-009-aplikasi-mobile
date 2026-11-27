@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.lock_outline, size: 72, color: Colors.blue),
+              Icon(Icons.lock_outline, size: 72, color: Colors.amber.shade700),
               const SizedBox(height: 16),
               const Text(
                 'Selamat Datang',
