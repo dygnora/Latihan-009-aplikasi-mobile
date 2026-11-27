@@ -133,12 +133,25 @@ class NotificationService {
     );
   }
 
-  /// Gabungkan title, body, dan data menjadi satu Map.
+  /// Gabungkan title, body, image, dan data menjadi satu Map.
   static Map<String, dynamic> _messageToMap(RemoteMessage message) {
+    final imageUrl =
+        message.notification?.android?.imageUrl ??
+        message.notification?.apple?.imageUrl ??
+        message.data['image']?.toString();
+
     return {
-      'title': message.notification?.title ?? '-',
-      'body': message.notification?.body ?? '-',
       ...message.data,
+      'title':
+          message.notification?.title ??
+          message.data['title']?.toString() ??
+          '-',
+      'body':
+          message.notification?.body ??
+          message.data['body']?.toString() ??
+          '-',
+      if (imageUrl != null && imageUrl.trim().isNotEmpty)
+        'image': imageUrl.trim(),
     };
   }
 

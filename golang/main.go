@@ -175,8 +175,13 @@ func sendNotification(f Form) (*Result, error) {
 	}
 
 	notification := map[string]string{"title": f.Title, "body": f.Body}
+	data := parseData(f.Data)
 	if img := strings.TrimSpace(f.Image); img != "" {
 		notification["image"] = img
+		// Sertakan juga di data agar URL gambar tetap tersedia saat notifikasi dibuka di Flutter.
+		if _, exists := data["image"]; !exists {
+			data["image"] = img
+		}
 	}
 	message := map[string]any{
 		f.TargetType:   strings.TrimSpace(f.Target), // "token" atau "topic"
@@ -186,7 +191,7 @@ func sendNotification(f Form) (*Result, error) {
 			"notification": map[string]string{"channel_id": channelID},
 		},
 	}
-	if data := parseData(f.Data); len(data) > 0 {
+	if len(data) > 0 {
 		message["data"] = data
 	}
 	payload, _ := json.MarshalIndent(map[string]any{"message": message}, "", "  ")
