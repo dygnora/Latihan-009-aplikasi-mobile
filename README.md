@@ -15,35 +15,33 @@ Gunakan akun berikut untuk login dan melakukan pengujian aplikasi:
 
 ---
 
-## 📱 Daftar Screenshot yang Dibutuhkan (`screenshots/`)
-
-> Simpan seluruh file screenshot di dalam folder [`screenshots/`](screenshots/) sesuai nama file di bawah ini.
+## 📱 Tangkapan Layar (Screenshots)
 
 ### 1. Autentikasi, Tema & Dashboard
 | Login Screen | Dashboard & FCM Token | Night Mode (Amber Dark) | Error State |
 | :---: | :---: | :---: | :---: |
-| ![Login Screen](screenshots/login_screen.png)<br>*(Simpan `login_screen.png`)* | ![Dashboard User](screenshots/user_info_screen.png)<br>*(Simpan `user_info_screen.png`)* | ![Night Mode](screenshots/theme_dark_mode.png)<br>*(Simpan `theme_dark_mode.png`)* | ![Error State](screenshots/error_state.png)<br>*(Simpan `error_state.png`)* |
+| ![Login Screen](screenshots/login_screen.png) | ![Dashboard User](screenshots/user_info_screen.png) | ![Night Mode](screenshots/theme_dark_mode.png) | ![Error State](screenshots/error_state.png) |
 
 ### 2. Pengujian Notifikasi (Web Sender, 3 Skenario & Detail)
 | Web Sender FCM (Golang) | Skenario A: Foreground | Skenario B: Background | Skenario C: Terminated |
 | :---: | :---: | :---: | :---: |
-| ![Web Sender FCM](screenshots/fcm_sender_web.png)<br>*(Simpan `fcm_sender_web.png`)* | ![Foreground Notification](screenshots/notif_foreground.png)<br>*(Simpan `notif_foreground.png`)* | ![Background Notification](screenshots/notif_background.png)<br>*(Simpan `notif_background.png`)* | ![Terminated Notification](screenshots/notif_terminated.png)<br>*(Simpan `notif_terminated.png`)* |
+| ![Web Sender FCM](screenshots/fcm_sender_web.png) | ![Foreground Notification](screenshots/notif_foreground.png) | ![Background Notification](screenshots/notif_background.png) | ![Terminated Notification](screenshots/notif_terminated.png) |
 
 | Detail Notifikasi | Zoom Gambar Notifikasi |
 | :---: | :---: |
-| ![Detail Notifikasi](screenshots/notification_detail_screen.png)<br>*(Simpan `notification_detail_screen.png`)* | ![Zoom Gambar](screenshots/notification_image_zoom.png)<br>*(Simpan `notification_image_zoom.png`)* |
+| ![Detail Notifikasi](screenshots/notification_detail_screen.png) | ![Zoom Gambar](screenshots/notification_image_zoom.png) |
 
-#### Checklist File Screenshot
-- [ ] `screenshots/login_screen.png` — Tampilan halaman login (tema Amber).
-- [ ] `screenshots/user_info_screen.png` — Tampilan dashboard info akun dan kartu FCM Token beserta tombol **Salin Token**.
-- [ ] `screenshots/theme_dark_mode.png` — Tampilan aplikasi saat tombol bulan/matahari diklik ke **Mode Malam (Night Mode)**.
-- [ ] `screenshots/error_state.png` — Tampilan alert error ketika email/password salah.
-- [ ] `screenshots/fcm_sender_web.png` — Tampilan web sender Golang (`http://127.0.0.1:8080`) yang menunjukkan `Status: 200` setelah mengirim notifikasi.
-- [ ] `screenshots/notif_foreground.png` — Tangkapan layar notifikasi pop-up saat aplikasi sedang dibuka (**Skenario A**).
-- [ ] `screenshots/notif_background.png` — Tangkapan layar notifikasi di status bar saat aplikasi di-minimize (**Skenario B**).
-- [ ] `screenshots/notif_terminated.png` — Tangkapan layar notifikasi tetap muncul saat aplikasi sudah ditutup dari Recent Apps (**Skenario C**).
-- [ ] `screenshots/notification_detail_screen.png` — Tampilan halaman **Detail Notifikasi** (gambar utuh tanpa terpotong, badge, judul, isi pesan, dan payload data tambahan).
-- [ ] `screenshots/notification_image_zoom.png` — Tampilan zoom gambar fullscreen saat gambar pada detail notifikasi diklik.
+#### Keterangan Screenshot
+- [x] `screenshots/login_screen.png` — Tampilan halaman login (tema Amber).
+- [x] `screenshots/user_info_screen.png` — Tampilan dashboard info akun dan kartu FCM Token beserta tombol **Salin Token**.
+- [x] `screenshots/theme_dark_mode.png` — Tampilan aplikasi saat tombol bulan/matahari diklik ke **Mode Malam (Night Mode)**.
+- [x] `screenshots/error_state.png` — Tampilan alert error ketika email/password salah.
+- [x] `screenshots/fcm_sender_web.png` — Tampilan web sender Golang (`http://127.0.0.1:8080`) yang menunjukkan `Status: 200` setelah mengirim notifikasi.
+- [x] `screenshots/notif_foreground.png` — Tangkapan layar notifikasi pop-up saat aplikasi sedang dibuka (**Skenario A**).
+- [x] `screenshots/notif_background.png` — Tangkapan layar notifikasi di status bar saat aplikasi di-minimize (**Skenario B**).
+- [x] `screenshots/notif_terminated.png` — Tangkapan layar notifikasi tetap muncul saat aplikasi sudah ditutup dari Recent Apps (**Skenario C**).
+- [x] `screenshots/notification_detail_screen.png` — Tampilan halaman **Detail Notifikasi** (gambar utuh tanpa terpotong, badge, judul, isi pesan, dan payload data tambahan).
+- [x] `screenshots/notification_image_zoom.png` — Tampilan zoom gambar fullscreen saat gambar pada detail notifikasi diklik.
 
 ---
 
