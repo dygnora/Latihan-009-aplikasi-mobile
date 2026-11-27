@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:latihan_009_aplikasi_mobile/theme_controller.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -49,15 +50,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(
+        title: const Text('Login'),
+        actions: const [ThemeToggleButton()],
+      ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.lock_outline, size: 72, color: Colors.blue),
+              Icon(Icons.lock_outline, size: 72, color: colorScheme.primary),
               const SizedBox(height: 16),
               const Text(
                 'Selamat Datang',
@@ -66,7 +73,10 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 8),
               Text(
                 'Silakan login untuk melanjutkan',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                ),
               ),
               const SizedBox(height: 32),
               TextField(
@@ -111,15 +121,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     vertical: 10.0,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.red.shade50,
+                    color: isDark
+                        ? Colors.red.shade900.withAlpha(70)
+                        : Colors.red.shade50,
                     borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(color: Colors.red.shade200),
+                    border: Border.all(
+                      color: isDark ? Colors.red.shade700 : Colors.red.shade200,
+                    ),
                   ),
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.error_outline,
-                        color: Colors.red,
+                        color: isDark ? Colors.red.shade300 : Colors.red,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
@@ -127,7 +141,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           _errorMessage!,
                           style: TextStyle(
-                            color: Colors.red.shade800,
+                            color: isDark
+                                ? Colors.red.shade200
+                                : Colors.red.shade800,
                             fontSize: 13,
                           ),
                         ),

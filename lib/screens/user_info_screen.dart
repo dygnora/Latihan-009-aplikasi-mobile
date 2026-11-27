@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:latihan_009_aplikasi_mobile/fcm_token_card.dart';
+import 'package:latihan_009_aplikasi_mobile/theme_controller.dart';
 
 class UserInfoScreen extends StatelessWidget {
   final User user;
 
-  const UserInfoScreen({Key? key, required this.user}) : super(key: key);
+  const UserInfoScreen({super.key, required this.user});
 
   Future<void> _logout() async {
     await FirebaseAuth.instance.signOut();
@@ -15,7 +17,9 @@ class UserInfoScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard User'),
+        centerTitle: true,
         actions: [
+          const ThemeToggleButton(),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: _logout,
@@ -23,7 +27,7 @@ class UserInfoScreen extends StatelessWidget {
           ), // IconButton
         ],
       ), // AppBar
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
@@ -35,7 +39,11 @@ class UserInfoScreen extends StatelessWidget {
                       radius: 50,
                       backgroundImage: NetworkImage(user.photoURL!),
                     )
-                  : const Icon(Icons.account_circle, size: 100, color: Colors.blue),
+                  : Icon(
+                      Icons.account_circle,
+                      size: 100,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
               const SizedBox(height: 24),
               const Text(
                 'Login Berhasil!',
@@ -44,6 +52,9 @@ class UserInfoScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Card(
                 elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -69,16 +80,18 @@ class UserInfoScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Terakhir Login: ${user.metadata.lastSignInTime.toString()}',
+                        'Terakhir Login: ${user.metadata.lastSignInTime?.toString() ?? "-"}',
                       ),
                     ],
                   ), // Column
                 ), // Padding
               ), // Card
+              const SizedBox(height: 16),
+              const FcmTokenCard(),
             ],
           ), // Column
         ), // Padding
-      ), // Center
+      ), // SingleChildScrollView
     ); // Scaffold
   }
 }
