@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:latihan_009_aplikasi_mobile/fcm_token_card.dart';
+import 'package:latihan_009_aplikasi_mobile/theme_controller.dart';
 
 class UserInfoScreen extends StatelessWidget {
   final User user;
@@ -18,6 +19,7 @@ class UserInfoScreen extends StatelessWidget {
         title: const Text('Dashboard User'),
         centerTitle: true,
         actions: [
+          const ThemeToggleButton(),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: _logout,
@@ -40,7 +42,7 @@ class UserInfoScreen extends StatelessWidget {
                   : Icon(
                       Icons.account_circle,
                       size: 100,
-                      color: Colors.amber.shade700,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
               const SizedBox(height: 24),
               const Text(

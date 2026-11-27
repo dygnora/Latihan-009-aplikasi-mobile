@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:latihan_009_aplikasi_mobile/theme_controller.dart';
 
 /// Halaman yang dibuka ketika notifikasi di-klik.
 class NotificationDetailScreen extends StatelessWidget {
@@ -8,6 +9,7 @@ class NotificationDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final imageUrl = data['image']?.toString().trim();
 
     // Pisahkan title, body, & image dari data tambahan
@@ -16,20 +18,31 @@ class NotificationDetailScreen extends StatelessWidget {
       ..remove('body')
       ..remove('image');
 
+    final cardColor = Theme.of(context).cardTheme.color ??
+        (isDark ? const Color(0xFF1E1B16) : Colors.white);
+    final accentColor = isDark ? Colors.amber.shade300 : Colors.amber.shade800;
+    final softBgColor =
+        isDark ? Colors.amber.shade900.withAlpha(70) : Colors.amber.shade50;
+    final iconCircleColor =
+        isDark ? Colors.amber.shade900.withAlpha(110) : Colors.amber.shade100;
+    final borderColor =
+        isDark ? Colors.amber.shade800.withAlpha(120) : Colors.amber.shade200;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detail Notifikasi'),
         centerTitle: true,
+        actions: const [ThemeToggleButton()],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           Card(
             elevation: 2,
-            color: Colors.white,
+            color: cardColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: BorderSide(color: Colors.amber.shade200),
+              side: BorderSide(color: borderColor),
             ),
             child: Padding(
               padding: const EdgeInsets.all(20),
@@ -41,13 +54,13 @@ class NotificationDetailScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
-                        color: Colors.amber.shade100,
+                        color: iconCircleColor,
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         Icons.notifications_active,
                         size: 56,
-                        color: Colors.amber.shade800,
+                        color: accentColor,
                       ),
                     ),
                   const SizedBox(height: 16),
@@ -57,9 +70,13 @@ class NotificationDetailScreen extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.amber.shade50,
+                      color: softBgColor,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.amber.shade300),
+                      border: Border.all(
+                        color: isDark
+                            ? Colors.amber.shade700
+                            : Colors.amber.shade300,
+                      ),
                     ),
                     child: Text(
                       'NOTIFIKASI',
@@ -67,17 +84,19 @@ class NotificationDetailScreen extends StatelessWidget {
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.8,
-                        color: Colors.amber.shade900,
+                        color: isDark
+                            ? Colors.amber.shade200
+                            : Colors.amber.shade900,
                       ),
                     ),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     data['title']?.toString() ?? '-',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: isDark ? Colors.white : Colors.black87,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -87,7 +106,7 @@ class NotificationDetailScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       height: 1.4,
-                      color: Colors.grey.shade800,
+                      color: isDark ? Colors.grey.shade300 : Colors.grey.shade800,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -98,7 +117,7 @@ class NotificationDetailScreen extends StatelessWidget {
           const SizedBox(height: 20),
           Row(
             children: [
-              Icon(Icons.data_object, size: 20, color: Colors.amber.shade800),
+              Icon(Icons.data_object, size: 20, color: accentColor),
               const SizedBox(width: 8),
               const Text(
                 'Data Tambahan (Payload)',
@@ -110,10 +129,10 @@ class NotificationDetailScreen extends StatelessWidget {
           if (extraData.isEmpty)
             Card(
               elevation: 0,
-              color: Colors.amber.shade50,
+              color: softBgColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: Colors.amber.shade200),
+                side: BorderSide(color: borderColor),
               ),
               child: const Padding(
                 padding: EdgeInsets.all(16),
@@ -126,18 +145,22 @@ class NotificationDetailScreen extends StatelessWidget {
           ...extraData.entries.map(
             (e) => Card(
               elevation: 1,
-              color: Colors.white,
+              color: cardColor,
               margin: const EdgeInsets.only(bottom: 8),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: Colors.amber.shade100),
+                side: BorderSide(
+                  color: isDark
+                      ? Colors.amber.shade900.withAlpha(110)
+                      : Colors.amber.shade100,
+                ),
               ),
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Colors.amber.shade100,
+                  backgroundColor: iconCircleColor,
                   child: Icon(
                     Icons.label_outline,
-                    color: Colors.amber.shade800,
+                    color: accentColor,
                     size: 20,
                   ),
                 ),
@@ -146,15 +169,15 @@ class NotificationDetailScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade600,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                   ),
                 ),
                 subtitle: Text(
                   e.value?.toString() ?? '-',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black87,
+                    color: isDark ? Colors.white : Colors.black87,
                   ),
                 ),
               ),
@@ -229,15 +252,21 @@ class _NotificationImagePreview extends StatelessWidget {
             );
           },
           errorBuilder: (context, error, stackTrace) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
             return Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.red.shade50,
+                color: isDark
+                    ? Colors.red.shade900.withAlpha(70)
+                    : Colors.red.shade50,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Text(
+              child: Text(
                 'Gambar gagal dimuat (pastikan URL mengarah langsung ke file gambar).',
+                style: TextStyle(
+                  color: isDark ? Colors.red.shade200 : Colors.red.shade900,
+                ),
                 textAlign: TextAlign.center,
               ),
             );
